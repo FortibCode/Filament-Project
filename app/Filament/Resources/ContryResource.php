@@ -17,7 +17,14 @@ class ContryResource extends Resource
 {
     protected static ?string $model = Contry::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-flag';
+    protected static ?string $navigationLabel = 'Contry';
+    protected static ?string $modelLabel = 'Employees Contry';
+
+    protected static ?string $navigationGroup = 'System Management';
+
+    protected static ?int $navigationSort = 1;
+    
 
     public static function form(Form $form): Form
     {

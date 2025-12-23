@@ -17,44 +17,43 @@ class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Employee Management';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('contry_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('state_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('city_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('department_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('middle_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\Section::make('User Name')
+                    ->description('Put the user name details in.')
+                    ->schema([
+                        Forms\Components\TextInput::make('first_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('last_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('middle_name')
+                            ->maxLength(255),
+                    ])->columns(3),
+                Forms\Components\Section::make('User Address')
+                ->schema([
+                    Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('zip_code')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('date_of_birth')
+                ])->columns(2),
+                Forms\Components\Section::make('User Details')
+                ->schema([
+                    Forms\Components\DatePicker::make('date_of_birth')
                     ->required(),
                 Forms\Components\DatePicker::make('date_of_hire')
                     ->required(),
-            ]);
+                ])->columns(2)
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
