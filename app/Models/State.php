@@ -4,16 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Country;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Contry;
 
 class State extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'country_id'];
+     protected $fillable = ['name', 'contry_id'];
 
-    public function country()
+    // Relation : un état appartient à un pays
+    public function country():  BelongsTo
     {
-        return $this->belongsTo(Contry::class);
+        return $this->belongsTo(Contry::class, 'contry_id');
     }
 }

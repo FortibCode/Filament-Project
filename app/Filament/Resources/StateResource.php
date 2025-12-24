@@ -31,9 +31,12 @@ class StateResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('contry_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('contry_id')
+                    ->label('Pays')
+                    ->relationship('country', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),

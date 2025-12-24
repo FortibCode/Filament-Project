@@ -3,9 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\State;
+use App\Models\Contry;
+use App\Models\City;
+use App\Models\Department;
 
 class Employee extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Contry::class);
+    }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
 }

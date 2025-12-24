@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('states', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('contry_id');
             $table->string('name');
             $table->timestamps();
 
-            $table->foreign('country_id')->references('id')->on('contries')->onDelete('cascade');
+            $table->foreign('contry_id')->references('id')->on('contries')->onDelete('cascade');
         });
     }
 
