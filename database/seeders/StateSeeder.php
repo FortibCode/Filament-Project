@@ -7,45 +7,76 @@ use Illuminate\Support\Facades\DB;
 
 class StateSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Supprime les anciens états
+        // Supprimer les anciens states
         DB::table('states')->delete();
 
-        // Vérifie que le pays United States existe
-        $usa = DB::table('contries')->where('id', 223)->first();
-        if (!$usa) {
-            DB::table('contries')->insert([
-                'id' => 223,
-                'code' => 'US',
-                'name' => 'United States',
-                'phonecode' => 1
-            ]);
-        }
+        /**
+         * States par pays
+         * clé = contries.id
+         */
+        $statesByCountry = [
 
-        // Tableau des 50 états américains
-        $states = [
-            'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut',
-            'Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa',
-            'Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan',
-            'Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire',
-            'New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio',
-            'Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota',
-            'Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+            // 🇺🇸 United States (id = 223)
+            223 => [
+                'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut',
+                'Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa',
+                'Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan',
+                'Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada',
+                'New Hampshire','New Jersey','New Mexico','New York','North Carolina',
+                'North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island',
+                'South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont',
+                'Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+            ],
+
+            // 🇦🇺 Australia (id = 9)
+            9 => [
+                'New South Wales','Victoria','Queensland',
+                'Western Australia','South Australia',
+                'Tasmania','Northern Territory',
+                'Australian Capital Territory'
+            ],
+
+            // 🇦🇷 Argentina (id = 7)
+            7 => [
+                'Buenos Aires','Córdoba','Santa Fe','Mendoza',
+                'Tucumán','Salta','Misiones','Chaco'
+            ],
+
+            // 🇦🇹 Austria (id = 10)
+            10 => [
+                'Vienna','Lower Austria','Upper Austria','Styria',
+                'Tyrol','Salzburg','Carinthia','Vorarlberg','Burgenland'
+            ],
+
+            // 🇦🇫 Afghanistan (id = 1)
+            1 => [
+                'Kabul','Herat','Kandahar','Balkh',
+                'Nangarhar','Badakhshan'
+            ],
+
+            // 🇩🇿 Algeria (id = 3)
+            3 => [
+                'Algiers','Oran','Constantine','Annaba',
+                'Blida','Tizi Ouzou','Bejaia'
+            ],
         ];
 
-        // Insérer tous les états liés au pays
-        foreach ($states as $index => $stateName) {
-            $stateId = $index + 1;
-            $exists = DB::table('states')->where('id', $stateId)->first();
-            if (!$exists) {
+        foreach ($statesByCountry as $countryId => $states) {
+
+            // Vérifier que le pays existe
+            $exists = DB::table('contries')->where('id', $countryId)->exists();
+            if (! $exists) {
+                continue;
+            }
+
+            foreach ($states as $state) {
                 DB::table('states')->insert([
-                    'id' => $stateId,
-                    'name' => $stateName,
-                    'contry_id' => 223,
+                    'name'       => $state,
+                    'contry_id'  => $countryId,
+                    'created_at'=> now(),
+                    'updated_at'=> now(),
                 ]);
             }
         }

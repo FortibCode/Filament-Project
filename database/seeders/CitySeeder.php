@@ -2,26 +2,87 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class CitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-        public function run()
+    public function run(): void
     {
-        $states = DB::table('states')->pluck('id', 'name');
+        // Supprimer les anciennes villes
+        DB::table('cities')->delete();
 
-        DB::table('cities')->insert([
-            ['name' => 'New York City', 'state_id' => $states['New York']],
-            ['name' => 'Los Angeles',   'state_id' => $states['California']],
-            ['name' => 'Houston',       'state_id' => $states['Texas']],
-            ['name' => 'Miami',         'state_id' => $states['Florida']],
-            ['name' => 'Chicago',       'state_id' => $states['Illinois']],
-        ]);
+        /**
+         * Villes par État
+         * clé = state.name
+         */
+        $citiesByState = [
+
+            // 🇺🇸 United States
+            'New York' => [
+                'New York City','Buffalo','Rochester',
+                'Albany','Syracuse','Yonkers','Ithaca',
+                'Poughkeepsie','Schenectady'
+            ],
+
+            'California' => [
+                'Los Angeles','San Francisco','San Diego',
+                'Sacramento','Fresno','Oakland','Long Beach',
+                'Bakersfield','Modesto','Fremont'
+            ],
+
+            'Texas' => [
+                'Houston','Dallas','Austin','San Antonio',
+                'El Paso','Plano','Waco','Arlington',
+                'Lubbock','Amarillo'
+            ],
+
+            'Florida' => [
+                'Miami','Orlando','Tampa','Jacksonville',
+                'Tallahassee','Naples','Gainesville',
+                'Winter Haven','Lakeland','Ocala'
+            ],
+
+            'Illinois' => [
+                'Chicago'
+            ],
+
+            // 🇦🇺 Australia
+            'New South Wales' => [
+                'Sydney','Newcastle','Wollongong'
+            ],
+
+            'Victoria' => [
+                'Melbourne','Geelong','Ballarat'
+            ],
+
+            // 🇩🇿 Algeria
+            'Algiers' => [
+                'Bab El Oued','Hydra','El Madania'
+            ],
+
+            'Oran' => [
+                'Es Sénia','Bir El Djir','Arzew'
+            ],
+        ];
+
+        foreach ($citiesByState as $stateName => $cities) {
+
+            // Récupérer l'id du state
+            $state = DB::table('states')->where('name', $stateName)->first();
+
+            if (! $state) {
+                continue; // évite les erreurs
+            }
+
+            foreach ($cities as $city) {
+                DB::table('cities')->insert([
+                    'name'       => $city,
+                    'state_id'   => $state->id,
+                    'created_at'=> now(),
+                    'updated_at'=> now(),
+                ]);
+            }
+        }
     }
-
 }

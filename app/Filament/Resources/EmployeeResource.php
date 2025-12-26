@@ -12,6 +12,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
+use Filament\Forms\Get;
+use App\Models\State;
+use App\Models\City;
+use Filament\Forms\Set;
 
 class EmployeeResource extends Resource
 {
@@ -32,16 +37,30 @@ class EmployeeResource extends Resource
                             ->relationship('country', 'name')  
                             ->searchable()
                             ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set){
+                                $set('state_id', null);
+                                $set('city_id', null);
+                            })
                             ->required(),
                             Forms\Components\Select::make('state_id')
-                            ->relationship(name: 'state', titleAttribute: 'name')  
+                            ->options(fn(Get $get ): Collection => State::query()
+                            ->where('contry_id', $get('contry_id'))
+                            ->pluck('name', 'id')
+                            )   
                             ->searchable()
                             ->preload()
+                            ->live()
+                             ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
                             ->required(),
                             Forms\Components\Select::make('city_id')
-                            ->relationship(name: 'city', titleAttribute: 'name')  
+                            ->options(fn(Get $get ): Collection => City::query()
+                            ->where('state_id', $get('state_id'))
+                            ->pluck('name', 'id')
+                            )
                             ->searchable()
                             ->preload()
+                            ->live()
                             ->required(),
                             Forms\Components\Select::make('department_id')
                             ->relationship(name: 'department', titleAttribute: 'name')  
@@ -74,6 +93,8 @@ class EmployeeResource extends Resource
                 Forms\Components\Section::make('User Details')
                 ->schema([
                     Forms\Components\DatePicker::make('date_of_birth')
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
                     ->required(),
                 Forms\Components\DatePicker::make('date_of_hire')
                     ->required(),
