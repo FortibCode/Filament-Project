@@ -3,8 +3,14 @@
 namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Resources\EmployeeResource;
+use App\Models\Employee;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ListRecords\Tab;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables;
+
 
 class ListEmployees extends ListRecords
 {
@@ -14,6 +20,32 @@ class ListEmployees extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'All' => Tab::make(),
+
+            'this_week' => Tab::make('This Week')
+                ->modifyQueryUsing(
+                    fn (Builder $query) =>
+                        $query->where('date_of_hire', '>=', now()->subWeek())
+                )
+                ->badge(Employee::where('date_of_hire', '>=', now()->subWeek())->count()),
+
+            'This Month' => Tab::make()
+                ->modifyQueryUsing(
+                    fn (Builder $query) =>
+                        $query->where('date_of_hire', '>=', now()->subMonth())
+                )->badge(Employee::where('date_of_hire', '>=', now()->subMonth())->count()),
+
+            'This Year' => Tab::make()
+                ->modifyQueryUsing(
+                    fn (Builder $query) =>
+                        $query->where('date_of_hire', '>=', now()->subYear())
+                )->badge(Employee::where('date_of_hire', '>=', now()->subYear())->count()),
         ];
     }
 }

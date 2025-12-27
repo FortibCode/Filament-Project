@@ -7,11 +7,22 @@ use App\Filament\Resources\StateResource\RelationManagers;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Get;;
+use Filament\Forms\Set;
+use Illuminate\Support\Collection;
+use App\Models\Contry;
+use App\Filament\Resources\StateResource\RelationManagers\CitiesRelationManager;
+use App\Filament\Resources\StateResource\RelationManagers\EmployeesRelationManager;
+
 
 class StateResource extends Resource
 {
@@ -33,7 +44,7 @@ class StateResource extends Resource
             ->schema([
                 Forms\Components\Select::make('contry_id')
                     ->label('Pays')
-                    ->relationship('country', 'name')
+                    ->relationship('contry', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -47,10 +58,12 @@ class StateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('contry_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('contry.name')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('State name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -65,6 +78,7 @@ class StateResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -74,10 +88,31 @@ class StateResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('State Information')
+                    ->schema([
+                        TextEntry::make('contry.name')
+                            ->label('Country Name'),
+                        TextEntry::make('name')
+                            ->label('State Name'),
+                        TextEntry::make('created_at')
+                            ->label('Created At')
+                            ->dateTime(),
+                        TextEntry::make('updated_at')
+                            ->label('Updated At')
+                            ->dateTime(),
+                    ])->columns(4),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            CitiesRelationManager::class,
+            EmployeesRelationManager::class,
         ];
     }
 

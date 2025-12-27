@@ -35,6 +35,11 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
+            ->navigationGroups([
+                'Employee Management',
+                'System Management',
+                'User Management',
+            ])
             ->font('Poppins')
             ->brandLogo(asset('images/laravel-framework.png'))
             ->favicon(asset('images/laravel-framework.png'))

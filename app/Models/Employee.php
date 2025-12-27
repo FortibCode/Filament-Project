@@ -21,7 +21,7 @@ class Employee extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function country(): BelongsTo
+    public function contry(): BelongsTo
     {
         return $this->belongsTo(Contry::class);
     }
